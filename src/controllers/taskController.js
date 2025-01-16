@@ -4,17 +4,23 @@ const axios = require('axios');
 exports.createTask = async (req, res) => {
   const { title, description, userId } = req.body;
   try {
-    // Verify user existence
+    console.log('Request body:', req.body);
     const userResponse = await axios.get(`${process.env.USER_SERVICE_URL}/api/users/verify/${userId}`);
-    if (!userResponse.data.valid) return res.status(400).json({ message: 'Invalid user ID' });
+    console.log('User service response:', userResponse.data);
+
+    if (!userResponse.data.valid) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
 
     const task = new Task({ title, description, userId });
     await task.save();
     res.status(201).json(task);
   } catch (error) {
+    console.error('Error in createTask:', error.message);
     res.status(500).json({ error: 'Error creating task' });
   }
 };
+
 
 exports.getTasks = async (req, res) => {
   try {
