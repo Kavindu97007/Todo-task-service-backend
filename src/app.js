@@ -1,11 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const taskRoutes = require('./routes/taskRoutes');
+const cors = require('cors');
 const app = express();
 
 require('dotenv').config();
 
 app.use(express.json());
+
+// Middleware
+app.use(cors({
+  origin: 'http://localhost:3000', // Frontend origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+  credentials: true, // Allow cookies/auth headers
+}));
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
